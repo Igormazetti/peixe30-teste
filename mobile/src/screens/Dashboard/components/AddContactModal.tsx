@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
 import {useForm, Controller} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {Contact, EditContactProps} from '../../../@types/contacts';
-import {formatDate, parseDate} from '../../../utils/dateFormatter';
+import {AddContactProps} from '../../../@types/contacts';
+import {parseDate} from '../../../utils/dateFormatter';
 import {
   formatPhoneNumber,
   parsePhoneNumber,
@@ -32,45 +32,40 @@ const schema = yup.object().shape({
   address: yup.string().required('Endereço é obrigatório'),
 });
 
-interface EditContactModalProps {
+interface AddContactModalProps {
   open: boolean;
   setOpen: (value: boolean) => void;
-  handleEdit: (id: string, updateData: EditContactProps) => void;
-  editData: Contact;
+  handleAdd: (contactData: AddContactProps) => void;
 }
 
-export default function EditContactModal({
+export default function AddContactModal({
   open,
   setOpen,
-  handleEdit,
-  editData,
-}: EditContactModalProps) {
+  handleAdd,
+}: AddContactModalProps) {
   const {
     control,
     handleSubmit,
     setValue,
+    reset,
     formState: {errors},
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = (data: any) => {
-    handleEdit(editData.id, {
-      ...data,
-      birthDate: parseDate(data.birthDate),
-      phoneNumber: parsePhoneNumber(data.phoneNumber),
-    });
-    setOpen(false);
+    try {
+      handleAdd({
+        ...data,
+        birthDate: parseDate(data.birthDate),
+        phoneNumber: parsePhoneNumber(data.phoneNumber),
+      });
+      reset();
+      setOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  useEffect(() => {
-    setValue('name', editData.name);
-    setValue('email', editData.email);
-    setValue('lastName', editData.lastName);
-    setValue('phoneNumber', formatPhoneNumber(editData.phoneNumber));
-    setValue('address', editData.address);
-    setValue('birthDate', formatDate(editData.birthDate));
-  }, [editData, setValue]);
 
   const handleDateChange = (text: string) => {
     let formattedDate = text
@@ -98,7 +93,7 @@ export default function EditContactModal({
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Editar Contato</Text>
+            <Text style={styles.modalText}>Novo Contato</Text>
 
             <Controller
               control={control}

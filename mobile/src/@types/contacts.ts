@@ -19,3 +19,12 @@ export interface EditContactProps {
   address?: string;
   email?: string;
 }
+
+export interface AddContactProps {
+  name: string;
+  lastName: string;
+  phoneNumber: string;
+  birthDate: string;
+  address: string;
+  email: string;
+}

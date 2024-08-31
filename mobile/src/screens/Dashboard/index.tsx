@@ -1,13 +1,18 @@
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import axios from 'axios';
-import {Contact, EditContactProps} from '../../@types/contacts';
+import {
+  AddContactProps,
+  Contact,
+  EditContactProps,
+} from '../../@types/contacts';
 import {useQuery} from 'react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ContactsListItem from './components/ContactsListItem';
 import {ListEmpty} from '../../components/ListEmpty';
 import DeleteContactModal from './components/DeleteContactModal';
 import EditContactModal from './components/EditContactModal';
+import AddContactModal from './components/AddContactModal';
 
 export function Dashboard() {
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -26,6 +31,8 @@ export function Dashboard() {
 
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string>();
+
+  const [openAddModal, setOpenAddModal] = useState(false);
 
   const {data, refetch} = useQuery<Contact[]>(
     ['contacts'],
@@ -87,9 +94,32 @@ export function Dashboard() {
     }
   };
 
+  const handleAddContact = async (contactData: AddContactProps) => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+
+      await axios.post('http://10.0.2.2:6060/contacts/create', contactData, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+      refetch();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Lista de Contatos</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Lista de Contatos</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => setOpenAddModal(true)}>
+          <Text style={styles.addButtonText}>Adicionar Contato</Text>
+        </TouchableOpacity>
+      </View>
+
       {data ? (
         <FlatList
           data={data}
@@ -125,6 +155,12 @@ export function Dashboard() {
         setOpen={setOpenDeleteModal}
         handleDelete={handleDeleteContacts}
       />
+
+      <AddContactModal
+        open={openAddModal}
+        setOpen={setOpenAddModal}
+        handleAdd={handleAddContact}
+      />
     </View>
   );
 }
@@ -135,10 +171,25 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 36,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+  },
+  addButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   listContainer: {
     paddingBottom: 16,
