@@ -8,7 +8,8 @@
     "dev": "tsx watch ./src/server.ts",
     "prisma": "npx prisma",
     "prisma-setup": "npx prisma migrate dev && npx prisma generate",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
