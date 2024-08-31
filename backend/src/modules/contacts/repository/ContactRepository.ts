@@ -57,10 +57,15 @@ export default class ContactRepository {
     return contact;
   }
 
-  public async getContactByName(userId: string, name: string) {
+  public async getContactByName(
+    userId: string,
+    name: string,
+    lastName: string,
+  ) {
     const contact = await this.db.findFirst({
       where: {
         name,
+        lastName,
         userId,
       },
     });

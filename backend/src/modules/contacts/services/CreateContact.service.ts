@@ -26,7 +26,11 @@ export default class CreateContactService {
     email,
     userId,
   }: IRequest) {
-    const contact = await this.contactRepository.getContactByName(userId, name);
+    const contact = await this.contactRepository.getContactByName(
+      userId,
+      name,
+      lastName,
+    );
 
     if (contact) {
       return {
