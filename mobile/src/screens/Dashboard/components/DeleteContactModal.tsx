@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   buttonDelete: {
-    backgroundColor: 'red',
+    backgroundColor: '#f44336',
   },
   buttonClose: {
     backgroundColor: '#2196F3',

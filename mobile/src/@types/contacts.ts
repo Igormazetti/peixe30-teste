@@ -15,7 +15,7 @@ export interface EditContactProps {
   name?: string;
   lastName?: string;
   phoneNumber?: string;
-  birthDate?: Date;
+  birthDate?: string;
   address?: string;
   email?: string;
 }

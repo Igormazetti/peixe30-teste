@@ -7,9 +7,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ContactsListItem from './components/ContactsListItem';
 import {ListEmpty} from '../../components/ListEmpty';
 import DeleteContactModal from './components/DeleteContactModal';
+import EditContactModal from './components/EditContactModal';
 
 export function Dashboard() {
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [editData, setEditData] = useState<Contact>({
+    name: '',
+    phoneNumber: '',
+    address: '',
+    birthDate: new Date(),
+    createdAt: new Date(),
+    email: '',
+    lastName: '',
+    id: '',
+    updatedAt: new Date(),
+    userId: '',
+  });
+
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string>();
 
@@ -56,9 +70,16 @@ export function Dashboard() {
     updateData: EditContactProps,
   ) => {
     try {
+      const token = await AsyncStorage.getItem('userToken');
+
       await axios.patch(
         `http://10.0.2.2:6060/contacts/update/${id}`,
         updateData,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
       );
       refetch();
     } catch (err) {
@@ -79,7 +100,10 @@ export function Dashboard() {
                 setIdToDelete(item.id);
                 setOpenDeleteModal(true);
               }}
-              onEdit={() => setOpenEditModal(false)}
+              onEdit={() => {
+                setEditData(item);
+                setOpenEditModal(true);
+              }}
               contact={item}
             />
           )}
@@ -89,6 +113,12 @@ export function Dashboard() {
       ) : (
         <Text style={styles.title}>Loading...</Text>
       )}
+      <EditContactModal
+        editData={editData}
+        handleEdit={handleEditContacts}
+        open={openEditModal}
+        setOpen={setOpenEditModal}
+      />
 
       <DeleteContactModal
         open={openDeleteModal}

@@ -1,6 +1,10 @@
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Contact} from '../../../@types/contacts';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faTrash, faPencil} from '@fortawesome/free-solid-svg-icons';
+import {formatDate} from '../../../utils/dateFormatter';
+import {formatPhoneNumber} from '../../../utils/phoneFormatter';
 
 interface ContactsListItemProps {
   contact: Contact;
@@ -13,22 +17,28 @@ export default function ContactsListItem({
   onEdit,
   onDelete,
 }: ContactsListItemProps) {
+  console.log(contact.phoneNumber);
   return (
     <View style={styles.contactItem}>
       <View style={styles.contactInfo}>
         <Text style={styles.contactName}>
           {contact.name} {contact.lastName}
         </Text>
-        <Text style={styles.contactDetails}>{contact.phoneNumber}</Text>
-        <Text style={styles.contactDetails}>{contact.email}</Text>
-        <Text style={styles.contactDetails}>{contact.address}</Text>
+        <Text style={styles.contactDetails}>
+          Telefone: {formatPhoneNumber(contact.phoneNumber)}
+        </Text>
+        <Text style={styles.contactDetails}>
+          Nascimento: {formatDate(contact.birthDate)}
+        </Text>
+        <Text style={styles.contactDetails}>E-mail: {contact.email}</Text>
+        <Text style={styles.contactDetails}>Endereço: {contact.address}</Text>
       </View>
       <View style={styles.actions}>
         <TouchableOpacity onPress={onEdit} style={styles.button}>
-          <Text>Editar</Text>
+          <FontAwesomeIcon icon={faPencil} color="#2196F3" />
         </TouchableOpacity>
         <TouchableOpacity onPress={onDelete} style={styles.button}>
-          <Text>Deletar</Text>
+          <FontAwesomeIcon icon={faTrash} color="#f44336" />
         </TouchableOpacity>
       </View>
     </View>
@@ -43,6 +53,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#ddd',
     borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   contactName: {
     fontSize: 18,
@@ -57,7 +69,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   actions: {
-    flexDirection: 'row',
+    flexDirection: 'column',
+    gap: 36,
     alignItems: 'center',
   },
   button: {
