@@ -12,7 +12,7 @@ RUN npx prisma generate
 
 RUN npm run build
 
-RUN npx prisma migrate deploy
+RUN npx prisma migrate -d
 
 RUN npm run seed
 
