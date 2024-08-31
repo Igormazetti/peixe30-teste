@@ -8,11 +8,11 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-
 RUN npm run prisma-setup
 
 RUN npm run seed
+
+RUN npm run build
 
 EXPOSE 6060
 
