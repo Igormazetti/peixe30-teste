@@ -10,8 +10,6 @@ COPY . .
 
 RUN npx prisma generate
 
-RUN npm run seed
-
 RUN npm run build
 
 EXPOSE 6060
