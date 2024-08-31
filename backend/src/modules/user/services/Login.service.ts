@@ -41,7 +41,6 @@ export default class LoginService {
         id: user.id,
         name: user.name,
         email: user.email,
-        valid: user.valid,
       },
       token,
     };
