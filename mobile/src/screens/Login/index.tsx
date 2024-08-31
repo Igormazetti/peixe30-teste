@@ -39,7 +39,7 @@ export function Login() {
       await AsyncStorage.setItem('userToken', login.token);
       await AsyncStorage.setItem('userInfo', JSON.stringify(login.user));
 
-      navigation.navigate('dashboard');
+      navigation.navigate('Dashboard');
     } catch (error: any) {
       console.log(error);
       showErrorToast();

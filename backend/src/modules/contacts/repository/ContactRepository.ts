@@ -74,4 +74,10 @@ export default class ContactRepository {
       data,
     });
   }
+
+  public async deleteContact(id: string) {
+    await this.db.delete({
+      where: { id },
+    });
+  }
 }

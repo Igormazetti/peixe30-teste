@@ -4,6 +4,7 @@ import { object, string, date } from 'yup';
 import CreateContactService from '../services/CreateContact.service';
 import UpdateContactService from '../services/UpdateContact.service';
 import GetContactsByUserService from '../services/GetContactsByUser.service';
+import DeleteContactService from '../services/DeleteContact.service';
 
 const CreateContactSchema = object({
   name: string().required(),
@@ -47,7 +48,7 @@ export default class ContactController {
 
   public async getContactsByUser(request: Request, response: Response) {
     const userId = request.user.id;
-
+    console.log(userId);
     const getContactsByUserService = container.resolve(
       GetContactsByUserService,
     );
@@ -75,5 +76,15 @@ export default class ContactController {
     });
 
     return response.status(update.status).json(update);
+  }
+
+  public async delete(request: Request, response: Response) {
+    const { id } = request.params;
+
+    const deleteContactService = container.resolve(DeleteContactService);
+
+    await deleteContactService.execute({ id });
+
+    return response.status(200).json({ message: 'Contact deleted.' });
   }
 }
