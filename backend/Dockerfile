@@ -8,7 +8,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm run prisma-setup
+RUN npx prisma generate
+
+RUN npx prisma migrate dev
 
 RUN npm run seed
 
