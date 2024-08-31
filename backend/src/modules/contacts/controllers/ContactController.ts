@@ -48,7 +48,6 @@ export default class ContactController {
 
   public async getContactsByUser(request: Request, response: Response) {
     const userId = request.user.id;
-    console.log(userId);
     const getContactsByUserService = container.resolve(
       GetContactsByUserService,
     );

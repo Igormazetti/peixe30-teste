@@ -13,6 +13,7 @@ import {ListEmpty} from '../../components/ListEmpty';
 import DeleteContactModal from './components/DeleteContactModal';
 import EditContactModal from './components/EditContactModal';
 import AddContactModal from './components/AddContactModal';
+import Toast from 'react-native-toast-message';
 
 export function Dashboard() {
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -46,29 +47,47 @@ export function Dashboard() {
   const fetchContacts = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const request = await axios.get('http://10.0.2.2:6060/contacts', {
+      const request = await axios.get(`${process.env.API_URL}/contacts`, {
         headers: {
           authorization: `Bearer ${token}`,
         },
       });
-      return request.data.contacts || [];
+
+      const contacts = request.data.contacts || [];
+      contacts.sort((a: Contact, b: Contact) => a.name.localeCompare(b.name));
+
+      if (contacts.length) {
+        return contacts;
+      }
+      return [];
     } catch (error) {
       console.log(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Falha ao buscar contatos',
+      });
     }
   };
 
   const handleDeleteContacts = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      await axios.delete(`http://10.0.2.2:6060/contacts/delete/${idToDelete}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
+      await axios.delete(
+        `${process.env.API_URL}/contacts/delete/${idToDelete}`,
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       refetch();
       setOpenDeleteModal(false);
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Falha ao deletar contato',
+      });
     }
   };
 
@@ -80,7 +99,7 @@ export function Dashboard() {
       const token = await AsyncStorage.getItem('userToken');
 
       await axios.patch(
-        `http://10.0.2.2:6060/contacts/update/${id}`,
+        `${process.env.API_URL}/contacts/update/${id}`,
         updateData,
         {
           headers: {
@@ -91,6 +110,10 @@ export function Dashboard() {
       refetch();
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Falha ao editar contato',
+      });
     }
   };
 
@@ -106,6 +129,10 @@ export function Dashboard() {
       refetch();
     } catch (err) {
       console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Falha ao criar contato',
+      });
     }
   };
 

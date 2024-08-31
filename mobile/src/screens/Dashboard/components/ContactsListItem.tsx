@@ -17,7 +17,6 @@ export default function ContactsListItem({
   onEdit,
   onDelete,
 }: ContactsListItemProps) {
-  console.log(contact.phoneNumber);
   return (
     <View style={styles.contactItem}>
       <View style={styles.contactInfo}>

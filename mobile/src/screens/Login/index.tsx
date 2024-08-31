@@ -25,16 +25,19 @@ export function Login() {
 
   const handleLogin = async () => {
     try {
-      const login = await fetch('http://10.0.2.2:6060/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
+      const login = await fetch(
+        'https://peixe30-teste.onrender.com/users/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }).then(response => response.json());
+      ).then(response => response.json());
 
       await AsyncStorage.setItem('userToken', login.token);
       await AsyncStorage.setItem('userInfo', JSON.stringify(login.user));
